@@ -1,27 +1,39 @@
-with events as ( 
-    select * from {{ref('stg_postgres__events')}}
+with product_event as ( 
+    select * from {{ref('int_product_event')}}
 ), 
 
 product_orders as (
     select * from {{ref('int_product_orders')}}
-)
+),
+
+product_summary as (
+select
+    opr.order_date,
+    opr.product_id,
+    count(distinct opr.order_id) as order_count,
+    sum(opr.quantity) as quantity_ordered,
+    sum(opr.total_revenue) as product_revenue
+from product_orders as opr
+group by 
+    opr.order_date,
+    opr.product_id
+    )
 
 select 
-    event_date,
-    events.product_id,
-    count(case when event_type = 'page_view' then events.product_id end) AS page_view_count,
-    count(case when event_type = 'add_to_cart' then events.product_id end) AS add_to_cart_count,
-    count(distinct user_id) AS unique_user_count,
-    sum(order_count) as order_count,
-    sum(total_revenue) as total_revenue,
-    sum(total_quantity) as total_quantity,
-    sum(total_inventory) as total_inventory
-from events
-inner join product_orders
-    on product_orders.PRODUCT_ID = events.PRODUCT_ID
-    and product_orders.order_date = events.event_date
-where 
-    events.PRODUCT_ID is not null
+    ps.order_date, 
+    ps.product_id,
+    sum(pe.session_count) as session_count,
+    sum(pe.user_count) as user_count,
+    sum(pe.page_view_count) as page_views_count,
+    sum(pe.add_to_cart_count) as add_to_cart_count,
+    sum(ps.order_count) as order_count,
+    sum(ps.quantity_ordered) as quantity_ordered,
+    sum(ps.product_revenue) as product_revenue
+    
+from product_summary as ps
+inner join product_event as pe 
+    on pe.event_date = ps.order_date
+    and pe.product_id = ps.product_id
 group by 
-    event_date,
-    events.PRODUCT_ID
+    ps.order_date,
+    ps.product_id

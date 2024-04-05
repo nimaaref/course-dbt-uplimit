@@ -1,27 +1,33 @@
 with order_items as ( 
         select * from {{ref('stg_postgres__order_items')}}
-    ), 
-orders as (
-        select * from {{ ref('stg_postgres__orders')}}
-),
-
+    ),
 products as (
     select * from {{ ref('stg_postgres__products')}}
+), 
+
+orders as (
+select * from {{ ref('stg_postgres__orders')}}
+),
+
+order_day as (
+select distinct 
+    order_date,
+    order_id
+from orders
+
 )
 
 select 
-    order_date,
-    order_items.product_id, 
-    count(distinct orders.order_id) as order_count,
-    sum(order_items.quantity) as total_quantity,
-    sum(orders.order_cost) as total_revenue,
-    sum(products.inventory) as total_inventory
+    order_day.order_date,
+    order_items.order_id,
+    products.product_id,
+    {{ dbt_utils.generate_surrogate_key(['order_items.order_id', 'products.product_id']) }} AS order_line_id,
+    products.price,
+    order_items.quantity, 
+    (products.price * order_items.quantity) as total_revenue,
+    
 from order_items
-inner join orders 
-    on orders.order_id  = order_items.order_id
 inner join products
-    ON products.product_id = order_items.product_id
-group by 
-    order_date,
-    orders.order_id,
-    order_items.product_id
+    on products.product_id = order_items.product_id
+inner join order_day 
+    on order_day.order_id = order_items.order_id

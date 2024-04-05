@@ -1,17 +1,17 @@
 version: 2 
 
 models: 
-  - name: fct_product_performance_daily
+  - name: fact_product_performance_daily
     description: Daily aggregate of metrics at the product_id - date grain. Each row corresponds to one the product performance for a singular day.
     columns: 
-      - name: page_view_date
+      - name: order_date
       - name: product_id
         tests: 
           - not_null
-      - name: page_view_count
+      - name: session_count
+      - name: user_count
+      - name: page_views_count
       - name: add_to_cart_count
-      - name: unique_user_count
       - name: order_count
-      - name: total_revenue
-      - name: total_quantity
-      - name: total_inventory
+      - name: quantity_ordered
+      - name: product_revenue

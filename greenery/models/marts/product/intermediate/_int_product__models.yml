@@ -3,11 +3,23 @@ version: 2
 models:
 
   - name: int_product_orders
-    description: An intermediate model that aggregates the total quantity, revenue, and inventory for each item and order. 
+    description: An intermediate model for daily product sales and revenue joining products, orders, and order item tables. 
     columns:
       - name: order_date
+      - name: order_id
       - name: product_id
-      - name: order_count
-      - name: total_quantity
-      - name: total_revenue
-      - name: total_inventory 
+      - name: order_line_id
+      - name: price
+      - name: quantity
+      - name: total_revenue 
+
+  - name: int_product_event
+    description: An intermediate model for daily product events, user, and session counts. 
+    columns:
+      - name: event_date
+      - name: product_id
+      - name: session_count
+      - name: user_count
+      - name: page_views_count
+      - name: add_to_cart_count
+    
