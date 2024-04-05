@@ -1,0 +1,13 @@
+version: 2 
+
+models:
+
+  - name: int_product_orders
+    description: An intermediate model that aggregates the total quantity, revenue, and inventory for each item and order. 
+    columns:
+      - name: order_date
+      - name: product_id
+      - name: order_count
+      - name: total_quantity
+      - name: total_revenue
+      - name: total_inventory 

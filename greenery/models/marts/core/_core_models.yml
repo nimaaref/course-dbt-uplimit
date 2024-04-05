@@ -1,0 +1,26 @@
+version: 2 
+
+models: 
+  - name: fact_daily_summary
+    description: An aggregate of key KPIs monitored across the business at a day granularity. 
+    columns: 
+      - name: order_date
+        tests: 
+          - unique
+          - not_null
+      - name: total_revenue
+      - name: order_count
+      - name: user_count
+      - name: session_count
+      - name: total_shipping_cost
+  
+  - name: dim_products
+    description: A dimension table for the products available. 
+    columns: 
+      - name: product_id
+        tests: 
+          - unique
+          - not_null 
+      - name: product_name
+      - name: product_price
+

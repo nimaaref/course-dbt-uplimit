@@ -3,7 +3,7 @@ select
     session_id,
     user_id,
     page_url,
-    created_at,
+    cast(created_at as date) as event_date,
     event_type,
     order_id,
     product_id
