@@ -1,0 +1,14 @@
+version: 2 
+
+models:
+
+  - name: int_core_events
+    description: An intermediate model for daily  funnel events, session_counts, user_counts. 
+    columns:
+      - name: event_date
+      - name: session_count
+      - name: user_count
+      - name: page_views_count
+      - name: add_to_cart_count
+      - name: package_shipped_count
+    

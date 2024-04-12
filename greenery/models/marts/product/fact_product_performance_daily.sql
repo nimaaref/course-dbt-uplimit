@@ -6,6 +6,10 @@ product_orders as (
     select * from {{ref('int_product_orders')}}
 ),
 
+products as (
+    select * from {{ref('dim_products')}}
+),
+
 product_summary as (
 select
     opr.order_date,
@@ -22,6 +26,7 @@ group by
 select 
     ps.order_date, 
     ps.product_id,
+    products.product_name,
     sum(pe.session_count) as session_count,
     sum(pe.user_count) as user_count,
     sum(pe.page_view_count) as page_views_count,
@@ -34,6 +39,9 @@ from product_summary as ps
 inner join product_event as pe 
     on pe.event_date = ps.order_date
     and pe.product_id = ps.product_id
+inner join products
+    on products.product_id = ps.product_id
 group by 
     ps.order_date,
-    ps.product_id
+    ps.product_id,
+    products.product_name
